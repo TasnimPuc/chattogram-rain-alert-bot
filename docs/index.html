@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>চট্টগ্রাম বৃষ্টি ও জলাবদ্ধতা সতর্কতা</title>
+  <style>
+    :root { --bg:#f5f7fa; --card:#fff; --ink:#18202c; --muted:#5d6776; --line:#e2e6ec; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#11151b; --card:#1a1f27; --ink:#e7ebf0; --muted:#9aa4b2; --line:#2a313c; } }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.55 "Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+    main { max-width: 980px; margin: 0 auto; padding: 22px 18px 40px; }
+    h1 { font-size: 26px; margin: 0 0 4px; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .hero { display:flex; gap:16px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin:16px 0; }
+    .dot { width:64px; height:64px; border-radius:50%; flex:none; }
+    .l0{background:#2e9d5b}.l1{background:#e6b800}.l2{background:#ef7d22}.l3{background:#d63031}
+    .grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(210px,1fr)); gap:12px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+    .card b { font-size: 17px; }
+    .badge { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+    svg { width:100%; height:180px; background:var(--card); border:1px solid var(--line); border-radius:12px; margin-top:12px; }
+    footer { margin-top: 26px; }
+    a { color:#d63031; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>🌧 চট্টগ্রাম: বৃষ্টি ও জলাবদ্ধতার ঝুঁকি</h1>
+  <div class="muted" id="upd">লোড হচ্ছে…</div>
+  <div class="hero"><div id="dot" class="dot l0"></div><div><div id="lvl" style="font-size:22px;font-weight:700"></div>
+    <div class="muted" id="tide"></div></div></div>
+  <h2 style="font-size:18px">এলাকাভিত্তিক (পরের ৪৮ ঘণ্টা)</h2>
+  <div class="grid" id="areas"></div>
+  <h2 style="font-size:18px;margin-top:20px">ঘণ্টাভিত্তিক সম্ভাব্য বৃষ্টি (সবচেয়ে ভেজা এলাকা, মডেলের মধ্যমা)</h2>
+  <svg id="chart" viewBox="0 0 960 180" preserveAspectRatio="none"></svg>
+  <footer class="muted">উৎস: <a href="https://open-meteo.com/">Open-Meteo</a> (ECMWF, GFS, ICON; জোয়ার: Open-Meteo Marine) ·
+    প্রতি ৩ ঘণ্টায় GitHub Actions হালনাগাদ করে · স্বয়ংক্রিয় পূর্বাভাস, সরকারি সতর্কবার্তা নয় — আবহাওয়া অধিদপ্তরের বার্তা অনুসরণ করুন।</footer>
+</main>
+<script>
+const BN = (x) => String(x).replace(/[0-9]/g, (d) => "০১২৩৪৫৬৭৮৯"[d]);
+const NAME = ["নেই", "কম", "মাঝারি", "উচ্চ"];
+const t = (s) => { const d = new Date(s); const h = d.getHours(); const p = h<4?"রাত":h<6?"ভোর":h<12?"সকাল":h<15?"দুপুর":h<18?"বিকেল":h<20?"সন্ধ্যা":"রাত";
+  return `${BN(d.getDate())}/${BN(d.getMonth()+1)} ${p} ${BN(h%12||12)}টা`; };
+fetch("status.json?" + Date.now()).then(r => r.json()).then(s => {
+  document.getElementById("upd").textContent = "হালনাগাদ: " + t(s.updated);
+  document.getElementById("dot").className = "dot l" + s.level;
+  document.getElementById("lvl").textContent = `জলাবদ্ধতার ঝুঁকি: ${NAME[s.level]}`;
+  document.getElementById("tide").textContent = s.tides.length ? "জোয়ার (পূর্ণ): " + s.tides.slice(0, 4).map(t).join(", ") : "";
+  document.getElementById("areas").innerHTML = s.areas.sort((a,b)=>b.level-a.level||b.r3-a.r3).map(a =>
+    `<div class="card"><span class="badge l${a.level}"></span><b>${a.name}</b><div class="muted">ঝুঁকি: ${NAME[a.level]}</div>
+     ৩ ঘণ্টায় ${BN(Math.round(a.r3))} মিমি <span class="muted">(সর্বোচ্চ ${BN(Math.round(a.r3_worst))})</span><br>
+     ২৪ ঘণ্টায় ${BN(Math.round(a.r24))} মিমি<br><span class="muted">${a.peak ? "ভারী বৃষ্টি: " + t(a.peak) : ""}${a.tide_at_peak ? " · 🌊 জোয়ারের সময়" : ""}</span></div>`).join("");
+  const now = new Date(s.updated), H = s.hourly.filter(h => new Date(h.t) >= new Date(now - 3600e3)).slice(0, 48);
+  const mx = Math.max(5, ...H.map(h => h.mm)), w = 960 / Math.max(1, H.length);
+  document.getElementById("chart").innerHTML = H.map((h, i) => {
+    const y = 160 * h.mm / mx; const c = h.mm >= 15 ? "#d63031" : h.mm >= 7 ? "#ef7d22" : h.mm >= 2 ? "#e6b800" : "#6b9bd1";
+    return `<rect x="${i*w+1}" y="${170-y}" width="${w-2}" height="${y}" fill="${c}"><title>${t(h.t)}: ${BN(h.mm.toFixed(1))} মিমি</title></rect>`;
+  }).join("") + `<text x="6" y="14" font-size="12" fill="currentColor">সর্বোচ্চ ${BN(mx.toFixed(0))} মিমি/ঘণ্টা</text>`;
+}).catch(() => { document.getElementById("upd").textContent = "status.json এখনো তৈরি হয়নি — workflow একবার চালান।"; });
+</script>
+</body>
+</html>

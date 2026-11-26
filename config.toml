@@ -1,0 +1,67 @@
+# Chattogram rain / waterlogging alert — all settings in one place.
+# Rain thresholds follow the Bangladesh Meteorological Department (BMD) 24-hour categories
+# (moderately heavy 23–43 mm, heavy 44–88 mm, very heavy >= 89 mm) plus short-burst (3-hour) rules, because
+# waterlogging in Chattogram usually follows intense rain over a few hours, made worse by high tide.
+# They are starting points: check `python -m src.main backtest` and tune them.
+
+[city]
+name = "চট্টগ্রাম"
+timezone = "Asia/Dhaka"
+
+# Waterlogging-prone areas (approximate centre points).
+[[areas]]
+name = "মুরাদপুর"
+lat = 22.3655
+lon = 91.8340
+
+[[areas]]
+name = "চকবাজার"
+lat = 22.3545
+lon = 91.8370
+
+[[areas]]
+name = "বাকলিয়া"
+lat = 22.3450
+lon = 91.8500
+
+[[areas]]
+name = "আগ্রাবাদ"
+lat = 22.3245
+lon = 91.8120
+
+[[areas]]
+name = "হালিশহর"
+lat = 22.3300
+lon = 91.7800
+
+[[areas]]
+name = "পতেঙ্গা"
+lat = 22.2350
+lon = 91.7950
+
+[forecast]
+models = ["ecmwf_ifs025", "gfs_seamless", "icon_seamless"]   # several models -> median = "likely", max = "worst case"
+hours_ahead = 48
+
+[tide]
+enabled = true
+lat = 22.20            # sea point near the Karnaphuli mouth (marine model grid)
+lon = 91.78
+high_percentile = 70   # a local maximum above this percentile of the 3-day series counts as high tide
+window_hours = 2       # rain within ± this many hours of high tide drains slowly
+
+[levels]               # millimetres
+low_3h = 10
+low_24h = 23
+medium_3h = 25
+medium_24h = 44
+high_3h = 50
+high_24h = 89
+tide_high_3h = 30      # 3-hour rain this large during high tide -> high risk
+
+[alert]
+min_level = 2          # 1 = low, 2 = medium, 3 = high: send an alert from this level
+repeat_hours = 6       # same level still active -> remind after this many hours
+all_clear = true       # send a short message when the risk ends
+morning_summary_hour = 7   # daily outlook in the first run at or after this local hour (-1 = off)
+morning_summary_min_level = 1
