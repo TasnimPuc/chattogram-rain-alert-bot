@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T09:59",
+ "updated": "2026-11-27T13:14",
  "timezone": "Asia/Dhaka",
  "city": "চট্টগ্রাম",
  "level": 0,
@@ -13,7 +13,7 @@
    "r24": 0.0,
    "r24_worst": 0.0,
    "peak": null,
-   "tide_at_peak": false
+   "tide_at_peak": true
   },
   {
    "name": "চকবাজার",
@@ -23,7 +23,7 @@
    "r24": 0.0,
    "r24_worst": 0.0,
    "peak": null,
-   "tide_at_peak": false
+   "tide_at_peak": true
   },
   {
    "name": "বাকলিয়া",
@@ -33,7 +33,7 @@
    "r24": 0.0,
    "r24_worst": 0.0,
    "peak": null,
-   "tide_at_peak": false
+   "tide_at_peak": true
   },
   {
    "name": "আগ্রাবাদ",
@@ -43,7 +43,7 @@
    "r24": 0.0,
    "r24_worst": 0.0,
    "peak": null,
-   "tide_at_peak": false
+   "tide_at_peak": true
   },
   {
    "name": "হালিশহর",
@@ -53,7 +53,7 @@
    "r24": 0.0,
    "r24_worst": 0.0,
    "peak": null,
-   "tide_at_peak": false
+   "tide_at_peak": true
   },
   {
    "name": "পতেঙ্গা",
@@ -63,7 +63,7 @@
    "r24": 0.0,
    "r24_worst": 0.0,
    "peak": null,
-   "tide_at_peak": false
+   "tide_at_peak": true
   }
  ],
  "tides": [
@@ -74,22 +74,6 @@
   "2026-11-29T16:00"
  ],
  "hourly": [
-  {
-   "t": "2026-11-27T09:00",
-   "mm": 0.0
-  },
-  {
-   "t": "2026-11-27T10:00",
-   "mm": 0.0
-  },
-  {
-   "t": "2026-11-27T11:00",
-   "mm": 0.0
-  },
-  {
-   "t": "2026-11-27T12:00",
-   "mm": 0.0
-  },
   {
    "t": "2026-11-27T13:00",
    "mm": 0.0
@@ -264,6 +248,22 @@
   },
   {
    "t": "2026-11-29T08:00",
+   "mm": 0.0
+  },
+  {
+   "t": "2026-11-29T09:00",
+   "mm": 0.0
+  },
+  {
+   "t": "2026-11-29T10:00",
+   "mm": 0.0
+  },
+  {
+   "t": "2026-11-29T11:00",
+   "mm": 0.0
+  },
+  {
+   "t": "2026-11-29T12:00",
    "mm": 0.0
   }
  ],
