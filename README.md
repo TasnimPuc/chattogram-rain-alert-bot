@@ -1,5 +1,7 @@
 # Chattogram Rain & Waterlogging Alert Bot 🌧️🇧🇩
 
+![repo health](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/TasnimPuc/bd-rooftop-solar-calculator/main/.github/health/badge.json)
+
 Free **Telegram alerts in Bengali** when heavy rain (and with it waterlogging) is likely in Chattogram, plus a small
 live status page. Everything runs on **GitHub Actions cron**: no server, no paid API, no API key for the weather data.
 
